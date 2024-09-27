@@ -11,11 +11,13 @@ export default function Menu() {
 
   const [menus, setMenus] = useState<MenuType[] | null>(null);
   const [recipe, setRecipe] = useState<Recipe | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchMenu = async () => {
-      const res = await fetch(`/api/recipes?cuisine=${category}`);
+      const res = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
+      );
       if (!res.ok) {
         console.error("Failed to fetch recipes");
         return;
