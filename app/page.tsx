@@ -34,11 +34,10 @@ export default function Home() {
       <h1>Choose a Category!</h1>
       {categories && categories.length > 0 ? (
         categories.map((category) => (
-          <div
-            key={category.idCategory}
-            onClick={() => fetchRecipes(category.strCategory)}
-          >
-            <p>{category.strCategory}</p>
+          <div key={category.idCategory}>
+            <p onClick={() => fetchRecipes(category.strCategory)}>
+              {category.strCategory}
+            </p>
             <Image
               src={category.strCategoryThumb}
               alt={category.strCategory}
