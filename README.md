@@ -4,11 +4,15 @@
 
 TheMealDB API를 사용하여 카테고리별 음식과 레시피를 조회할 수 있는 서비스입니다.
 
-## local 실행
+## 로컬 실행 방법
 ```
 git clone https://github.com/YenaLey/cook-recipe.git
 cd cook-recipe
 npm install
 npm run dev
-http://localhost:3000 접속
+```
+## 접속
+```
+http://localhost:3000 // 메인 페이지 접속
+http://localhost:3000/apidocs // Swagger UI를 통한 API 문서 확인
 ```
