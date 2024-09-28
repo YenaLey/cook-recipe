@@ -1,6 +1,6 @@
 import { Acme } from "@next/font/google";
 import "./globals.css";
-import Navbar from "./Navbar";
+import Navbar from "./components/navbar";
 
 const acme = Acme({
   subsets: ["latin"],

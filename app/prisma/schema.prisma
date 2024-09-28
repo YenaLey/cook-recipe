@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") // .env 파일에 DB 연결 정보 설정
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  isVerified Boolean  @default(false)
+  verificationToken String?
+  menus     Menu[]   // 사용자와 메뉴 간의 1대다 관계 설정
+}
+
+model Menu {
+  id        Int      @id @default(autoincrement())
+  menuName  String
+  image     String   // 이미지 파일 URL 저장
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
