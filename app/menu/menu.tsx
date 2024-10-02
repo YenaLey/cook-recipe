@@ -16,7 +16,11 @@ export default function Menu() {
   const [error, setError] = useState<string | null>(null);
 
   if (!menus) {
-    return <p>메뉴를 불러올 수 없습니다.</p>;
+    return (
+      <div className="menu-container">
+        <h2>menu fetch error...</h2>
+      </div>
+    );
   }
 
   useEffect(() => {
@@ -85,11 +89,19 @@ export default function Menu() {
   };
 
   if (isLoading) {
-    return <p>로딩 중...</p>;
+    return (
+      <div className="menu-container">
+        <h2>Loading...</h2>
+      </div>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>; // 에러 메시지 표시
+    return (
+      <div className="menu-container">
+        <h2>{error}</h2>
+      </div>
+    );
   }
 
   return (
