@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export",
+  basePath: "/cook-recipe",
   reactStrictMode: false,
   images: {
     remotePatterns: [
