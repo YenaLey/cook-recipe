@@ -1,11 +1,12 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../../prisma/prisma";
 import { sendVerificationEmail } from "../../lib/email";
 
-export async function signup(req: NextApiRequest, res: NextApiResponse) {
-  const { email, name, password } = req.body;
+// 회원가입
+export async function POST(req: Request) {
+  const { email, name, password } = await req.json();
   const hashedPassword = await bcrypt.hash(password, 10);
   const verificationToken = jwt.sign(
     { email, name, password: hashedPassword },
@@ -16,47 +17,60 @@ export async function signup(req: NextApiRequest, res: NextApiResponse) {
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: "이미 존재하는 이메일입니다." });
+      return NextResponse.json(
+        { message: "이미 존재하는 이메일입니다." },
+        { status: 400 }
+      );
     }
 
     await sendVerificationEmail(email, verificationToken);
-    res.status(200).json({
+    return NextResponse.json({
       message:
         "회원가입을 위해 이메일 인증을 완료하세요. 이메일을 확인해주세요.",
     });
   } catch (error) {
-    res.status(400).json({ message: "회원가입 실패", error });
+    return NextResponse.json(
+      { message: "회원가입 실패", error },
+      { status: 400 }
+    );
   }
 }
 
-export async function login(req: NextApiRequest, res: NextApiResponse) {
-  const { email, password } = req.body;
+// 로그인
+export async function login(req: Request) {
+  const { email, password } = await req.json();
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res
-        .status(401)
-        .json({ message: "이메일 또는 비밀번호가 잘못되었습니다." });
+      return NextResponse.json(
+        { message: "이메일 또는 비밀번호가 잘못되었습니다." },
+        { status: 401 }
+      );
     }
 
     if (!user.isVerified) {
-      return res
-        .status(403)
-        .json({ message: "이메일 인증이 완료되지 않았습니다." });
+      return NextResponse.json(
+        { message: "이메일 인증이 완료되지 않았습니다." },
+        { status: 403 }
+      );
     }
 
     const token = jwt.sign({ userId: user.id }, "your-secret-key", {
       expiresIn: "1h",
     });
-    res.status(200).json({ message: "로그인 성공", token });
+    return NextResponse.json({ message: "로그인 성공", token });
   } catch (error) {
-    res.status(500).json({ message: "로그인 실패", error });
+    return NextResponse.json(
+      { message: "로그인 실패", error },
+      { status: 500 }
+    );
   }
 }
 
-export async function verifyEmail(req: NextApiRequest, res: NextApiResponse) {
-  const { token } = req.body;
+// 이메일 인증
+export async function verifyEmail(req: Request) {
+  const { token } = await req.json();
 
   try {
     const decoded = jwt.verify(token, "your-secret-key") as {
@@ -75,17 +89,27 @@ export async function verifyEmail(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    res.status(200).json({ message: "이메일 인증 및 회원가입 완료.", user });
+    return NextResponse.json({
+      message: "이메일 인증 및 회원가입 완료.",
+      user,
+    });
   } catch (error) {
-    res.status(400).json({ message: "잘못된 또는 만료된 토큰입니다." });
+    return NextResponse.json(
+      { message: "잘못된 또는 만료된 토큰입니다." },
+      { status: 400 }
+    );
   }
 }
 
-export async function getUserInfo(req: NextApiRequest, res: NextApiResponse) {
-  const authHeader = req.headers.authorization;
+// 사용자 정보 조회
+export async function GET(req: Request) {
+  const authHeader = req.headers.get("authorization");
 
   if (!authHeader) {
-    return res.status(401).json({ message: "인증이 필요합니다." });
+    return NextResponse.json(
+      { message: "인증이 필요합니다." },
+      { status: 401 }
+    );
   }
 
   const token = authHeader.split(" ")[1];
@@ -97,13 +121,17 @@ export async function getUserInfo(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "사용자 정보를 찾을 수 없습니다." });
+      return NextResponse.json(
+        { message: "사용자 정보를 찾을 수 없습니다." },
+        { status: 404 }
+      );
     }
 
-    res.status(200).json({ user });
+    return NextResponse.json({ user });
   } catch (error) {
-    res.status(401).json({ message: "잘못된 인증 정보입니다." });
+    return NextResponse.json(
+      { message: "잘못된 인증 정보입니다." },
+      { status: 401 }
+    );
   }
 }
