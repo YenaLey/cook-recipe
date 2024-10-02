@@ -11,20 +11,23 @@ export default function Menu() {
 
   const [menus, setMenus] = useState<MenuType[] | null>(null);
   const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchMenu = async () => {
+      setIsLoading(true); // 로딩 시작
       const res = await fetch(
         `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
       );
       if (!res.ok) {
         console.error("Failed to fetch recipes");
+        setIsLoading(false); // 로딩 종료
         return;
       }
       const data = await res.json();
-      console.log(data.meals);
       setMenus(data.meals || []);
+      setIsLoading(false); // 로딩 종료
     };
 
     if (category) {
@@ -71,7 +74,9 @@ export default function Menu() {
     <>
       <div className="menu-container">
         <h2>{category} Menu</h2>
-        {menus && menus.length > 0 ? (
+        {isLoading ? (
+          <p>로딩 중...</p> // 로딩 중일 때 메시지 표시
+        ) : menus && menus.length > 0 ? (
           menus.map((menu: MenuType) => (
             <div key={menu.idMeal}>
               <Image
@@ -85,7 +90,7 @@ export default function Menu() {
             </div>
           ))
         ) : (
-          <p>로딩 중...</p>
+          <p>메뉴를 찾을 수 없습니다.</p> // 데이터가 없을 때 메시지 표시
         )}
       </div>
       {isModalOpen && recipe && (
