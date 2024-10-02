@@ -185,13 +185,6 @@ body {
   font-size: 1.5rem;
 }
 
-.apidocs-container {
-  width: 100%;
-  background-color: white;
-  z-index: 10000;
-  position: absolute;
-}
-
 @font-face {
   font-family: "CookieRun-Regular";
   src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/CookieRun-Regular.woff")
