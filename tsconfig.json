@@ -17,9 +17,12 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "types/*": ["./app/types/*"]
+      "@customTypes/*": ["app/customTypes/*"],
+      "@components/*": ["./app/components/*"],
+      "@style/*": ["./app/style/*"]
     },
     "typeRoots": ["./types", "./node_modules/@types"]
   },

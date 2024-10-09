@@ -3,7 +3,8 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu as MenuType, Recipe } from "types/types";
+import { Menu as MenuType, Recipe } from "@customTypes/types";
+import { LuCopyPlus } from "react-icons/lu";
 
 export default function Menu() {
   const searchParams = useSearchParams();
@@ -14,6 +15,7 @@ export default function Menu() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [seletedMenu, setSeletedMenu] = useState<MenuType>();
 
   if (!menus) {
     return (
@@ -26,7 +28,7 @@ export default function Menu() {
   useEffect(() => {
     const fetchMenu = async () => {
       setIsLoading(true);
-      setError(null); // 에러 상태 초기화
+      setError(null);
       try {
         const res = await fetch(
           `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`
@@ -88,6 +90,26 @@ export default function Menu() {
     return ingredients;
   };
 
+  const handleSaveArchive = (menu: MenuType | undefined) => {
+    if (!menu) return;
+
+    fetch("/api/save-menu", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(menu),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to save menu");
+        }
+        alert("저장되었습니다.");
+      })
+      .catch((error) => alert(error.message)); //throw new Error()에서 던진 에러 객체의 메시지를 가져옴
+  };
+
   if (isLoading) {
     return (
       <div className="menu-container">
@@ -116,7 +138,10 @@ export default function Menu() {
                 alt={menu.strMeal}
                 width={140}
                 height={140}
-                onClick={() => fetchRecipeDetails(menu.idMeal)}
+                onClick={() => {
+                  fetchRecipeDetails(menu.idMeal);
+                  setSeletedMenu(menu);
+                }}
               />
               <h3>{menu.strMeal}</h3>
             </div>
@@ -131,6 +156,10 @@ export default function Menu() {
             <button onClick={closeModal} className="modal-close">
               X
             </button>
+            <LuCopyPlus
+              className="plus-icon"
+              onClick={() => handleSaveArchive(seletedMenu)}
+            />
             <h2>{recipe.strMeal}</h2>
             <Image
               src={recipe.strMealThumb}

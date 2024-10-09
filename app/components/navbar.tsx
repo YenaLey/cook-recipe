@@ -9,9 +9,14 @@ export default function Navbar() {
     router.push("/");
   };
 
+  const goToMypage = () => {
+    router.push("/mypage");
+  };
+
   return (
     <div className="navbar">
-      <p onClick={goToHome}>CookMate</p>
+      <h1 onClick={goToHome}>CookMate</h1>
+      <p onClick={goToMypage}>My Page</p>
     </div>
   );
 }
