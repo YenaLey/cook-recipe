@@ -17,6 +17,8 @@ export default function Menu() {
   const [error, setError] = useState<string | null>(null);
   const [seletedMenu, setSeletedMenu] = useState<MenuType>();
 
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+
   if (!menus) {
     return (
       <div className="menu-container">
@@ -93,7 +95,7 @@ export default function Menu() {
   const handleSaveArchive = (menu: MenuType | undefined) => {
     if (!menu) return;
 
-    fetch("/api/save-menu", {
+    fetch(`${BASE_URL}/api/save-menu`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
