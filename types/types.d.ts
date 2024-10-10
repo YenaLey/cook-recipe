@@ -1,17 +1,17 @@
-export interface CategoryType {
+declare interface CategoryType {
   idCategory: string;
   strCategory: string;
   strCategoryThumb: string;
   strCategoryDescription: string;
 }
 
-export interface Menu {
+declare interface MenuType {
   idMeal: string;
   strMeal: string;
   strMealThumb: string;
 }
 
-export interface Recipe {
+declare interface RecipeType {
   idMeal: string;
   strMeal: string;
   strInstructions: string;

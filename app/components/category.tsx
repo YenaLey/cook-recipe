@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { CategoryType } from "@customTypes/types";
 
 type CategoryProps = {
   categories: CategoryType[] | null;

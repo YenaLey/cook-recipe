@@ -1,15 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { Menu as MenuType, Recipe } from "@customTypes/types";
 import { useEffect, useState } from "react";
 import { FaHeartCircleMinus } from "react-icons/fa6";
 
 // 메뉴 데이터 가져오기
 async function getMenus() {
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    const res = await fetch(`${BASE_URL}/api/get-menu`);
+    const res = await fetch("/api/get-menu");
     const data = await res.json();
     return data.menus || [];
   } catch {
@@ -37,10 +35,8 @@ async function fetchRecipeDetails(mealId: string) {
 
 export default function Mypage() {
   const [menus, setMenus] = useState<MenuType[]>([]);
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<RecipeType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   // 메뉴 및 각 메뉴의 레시피 가져오기
   useEffect(() => {
@@ -69,7 +65,7 @@ export default function Mypage() {
 
   const handleDelete = async (mealId: string) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/delete-menu`, {
+      const response = await fetch("/api/delete-menu", {
         method: "DELETE", // DELETE 메서드 사용
         headers: {
           "Content-Type": "application/json",

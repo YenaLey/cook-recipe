@@ -3,7 +3,6 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu as MenuType, Recipe } from "@customTypes/types";
 import { LuCopyPlus } from "react-icons/lu";
 
 export default function Menu() {
@@ -11,13 +10,11 @@ export default function Menu() {
   const category = searchParams.get("category") || "Seafood";
 
   const [menus, setMenus] = useState<MenuType[]>([]);
-  const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [recipe, setRecipe] = useState<RecipeType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [seletedMenu, setSeletedMenu] = useState<MenuType>();
-
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   if (!menus) {
     return (
@@ -95,7 +92,7 @@ export default function Menu() {
   const handleSaveArchive = (menu: MenuType | undefined) => {
     if (!menu) return;
 
-    fetch(`${BASE_URL}/api/save-menu`, {
+    fetch("/api/save-menu", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
